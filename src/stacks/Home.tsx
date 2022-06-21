@@ -1,5 +1,5 @@
-import { View, Text, StatusBar, Button } from "react-native";
-import React from "react";
+import { View, Text, Button } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebase.config";
@@ -13,14 +13,48 @@ import { context } from "../context/context";
 import { AntDesign } from "@expo/vector-icons";
 import { colors, fontSize } from "../styles/global.styles";
 import LovedScreen from "../screens/loved/LovedScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
 
 const TabNavigator = createBottomTabNavigator();
 
-console.log(auth.currentUser?.displayName);
-
 export default function Home() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const getDarkModedata = async () => {
+    try {
+      const darkModeData = await AsyncStorage.getItem("darkModeState");
+      return darkModeData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const setDarkModeData = async (value: string) => {
+    try {
+      await AsyncStorage.setItem("darkModeState", value);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getDarkModedata()
+      .then((res) => {
+        if (res === null) {
+          setDarkModeData(JSON.stringify(false));
+        }
+        if (res !== null) {
+          const response = res === undefined ? "false" : res;
+          setIsDarkMode(JSON.parse(response));
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
-    <context.Provider value="sdfsd">
+    <context.Provider value={{ isDarkMode, setIsDarkMode, setDarkModeData }}>
+      <StatusBar style={!isDarkMode ? "dark" : "light"} />
       <TabNavigator.Navigator
         screenOptions={{
           headerShown: false,
@@ -29,6 +63,7 @@ export default function Home() {
           tabBarInactiveTintColor: colors.tertiary,
           tabBarStyle: {
             height: 60,
+            backgroundColor: isDarkMode ? colors.darkMode : colors.primary,
           },
         }}
       >
@@ -36,12 +71,16 @@ export default function Home() {
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarIcon: ({ size, focused, color }) => {
+            tabBarIcon: ({ focused, color }) => {
               return (
                 <View
                   style={{
                     backgroundColor: focused
-                      ? colors.tertiary
+                      ? isDarkMode
+                        ? colors.tertiary
+                        : colors.tertiary
+                      : isDarkMode
+                      ? colors.lightMode
                       : colors.opccityColor,
                     paddingVertical: 8,
                     paddingHorizontal: 20,
@@ -62,12 +101,16 @@ export default function Home() {
           name="Search"
           component={SearchScreen}
           options={{
-            tabBarIcon: ({ size, focused, color }) => {
+            tabBarIcon: ({ focused, color }) => {
               return (
                 <View
                   style={{
                     backgroundColor: focused
-                      ? colors.tertiary
+                      ? isDarkMode
+                        ? colors.tertiary
+                        : colors.tertiary
+                      : isDarkMode
+                      ? colors.lightMode
                       : colors.opccityColor,
                     paddingVertical: 8,
                     paddingHorizontal: 20,
@@ -88,12 +131,16 @@ export default function Home() {
           name="Loved"
           component={LovedScreen}
           options={{
-            tabBarIcon: ({ size, focused, color }) => {
+            tabBarIcon: ({ focused, color }) => {
               return (
                 <View
                   style={{
                     backgroundColor: focused
-                      ? colors.tertiary
+                      ? isDarkMode
+                        ? colors.tertiary
+                        : colors.tertiary
+                      : isDarkMode
+                      ? colors.lightMode
                       : colors.opccityColor,
                     paddingVertical: 8,
                     paddingHorizontal: 20,
@@ -114,12 +161,16 @@ export default function Home() {
           name="Profile"
           component={ProfileScreen}
           options={{
-            tabBarIcon: ({ size, focused, color }) => {
+            tabBarIcon: ({ focused, color }) => {
               return (
                 <View
                   style={{
                     backgroundColor: focused
-                      ? colors.tertiary
+                      ? isDarkMode
+                        ? colors.tertiary
+                        : colors.tertiary
+                      : isDarkMode
+                      ? colors.lightMode
                       : colors.opccityColor,
                     paddingVertical: 8,
                     paddingHorizontal: 20,
@@ -134,13 +185,9 @@ export default function Home() {
                 </View>
               );
             },
-            headerTitleStyle: {
-              color: colors.secondary,
-              fontWeight: "bold",
-            },
             headerShown: true,
             headerStyle: {
-              backgroundColor: colors.opccityColor,
+              backgroundColor: isDarkMode ? colors.darkMode : colors.primary,
             },
           }}
         />

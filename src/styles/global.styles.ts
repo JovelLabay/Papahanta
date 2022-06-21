@@ -6,6 +6,10 @@ const colors = {
   tertiary: "#FF4D67",
   other: "#EEF0F4",
   opccityColor: "#FFEEF0",
+  darkMode: "#1A1B22",
+  lightMode: "#302029",
+  alert: "#E4A5A5",
+  success: "#ABF399",
 };
 const fontSize = {
   giant: 40,
@@ -22,6 +26,6 @@ const opacity = {
 };
 
 const fullWidth = Dimensions.get("screen").width;
-const fullHeigh = Dimensions.get("screen").height;
+const fullHeight = Dimensions.get("screen").height;
 
-export { colors, fontSize, fullWidth, fullHeigh, opacity };
+export { colors, fontSize, fullWidth, fullHeight, opacity };

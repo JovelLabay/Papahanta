@@ -1,11 +1,13 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { Text } from "react-native";
+import React, { useEffect } from "react";
 
 import { auth } from "../../firebase/firebase.config";
 import { onAuthStateChanged, User } from "firebase/auth";
-import Authentication from "../stacks/Authentication";
+
 import { NativeBaseProvider } from "native-base";
 import { NotifierWrapper } from "react-native-notifier";
+
+import Authentication from "../stacks/Authentication";
 import Home from "../stacks/Home";
 
 export default function Index() {
@@ -17,7 +19,7 @@ export default function Index() {
     if (initializing) setInitializing(false);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const subscriber = onAuthStateChanged(auth, authenticatedNow);
 
     return subscriber;

@@ -2,12 +2,15 @@ import { StatusBar, StyleSheet } from "react-native";
 import { colors, fontSize } from "../../styles/global.styles";
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.primary,
-  },
-  navigationButton: {
+  navigation: {
     flexDirection: "row",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: fontSize.medium,
+    fontWeight: "bold",
+    marginLeft: 10,
+    color: colors.tertiary,
   },
   logoutBtn: {
     marginRight: 10,

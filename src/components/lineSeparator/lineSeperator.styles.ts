@@ -22,6 +22,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     fontWeight: "300",
   },
+  // LINE SEPARATOR 2
+  container2: {
+    height: 2,
+    backgroundColor: colors.other,
+    marginVertical: 10,
+    opacity: opacity.half,
+  },
 });
 
 export default styles;

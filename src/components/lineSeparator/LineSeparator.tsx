@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 
 import styles from "./lineSeperator.styles";
 
-export default function LineSeparator() {
+function LineSeparator() {
   return (
     <View style={styles.container}>
       <View style={styles.left}></View>
@@ -12,3 +12,9 @@ export default function LineSeparator() {
     </View>
   );
 }
+
+function LineSeparator2() {
+  return <View style={styles.container2}></View>;
+}
+
+export { LineSeparator, LineSeparator2 };

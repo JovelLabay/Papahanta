@@ -5,23 +5,21 @@ import {
   TouchableOpacity,
   StatusBar,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { Formik } from "formik";
-import { auth } from "../../../firebase/firebase.config";
-import styles from "./authForm.styles";
-import { Box, Checkbox } from "native-base";
-import { colors } from "../../styles/global.styles";
-import LineSeparator from "../lineSeparator/LineSeparator";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { signin, signup } from "../../functions/authention.firebase";
-import { Notifier, Easing, NotifierComponents } from "react-native-notifier";
-import { NotificationError } from "../notification/notification";
+import React, { useRef, useState } from "react";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { Formik } from "formik";
+
+import { LineSeparator } from "../lineSeparator/LineSeparator";
+import { NotificationError } from "../notification/Notification";
+import { signin, signup } from "../../functions/authention.firebase";
+import staticText from "../../modules/static.text.json";
+
 import { AuthStackParamListProps } from "../../../global";
 
-import staticText from "../../modules/static.text.json";
+import { colors } from "../../styles/global.styles";
+import styles from "./authForm.styles";
 
 // LOGIN ACCOUNT
 export function Login() {
@@ -37,9 +35,7 @@ export function Login() {
         initialValues={{ email: "", password: "" }}
         onSubmit={(values, actions) => {
           signin(values.email, values.password)
-            .then((res) => {
-              console.log(res);
-            })
+            .then(() => null)
             .catch((err) => {
               setIsError(true);
               actions.resetForm({
@@ -48,20 +44,7 @@ export function Login() {
                   password: "",
                 },
               });
-              Notifier.showNotification({
-                containerStyle: {
-                  paddingTop: StatusBar.currentHeight,
-                },
-                title: "Firebase Message",
-                description: JSON.stringify(err),
-                duration: 3000,
-                showAnimationDuration: 800,
-                showEasing: Easing.ease,
-                Component: NotifierComponents.Alert,
-                componentProps: {
-                  alertType: "error",
-                },
-              });
+              NotificationError(JSON.stringify(err));
             });
         }}
       >
@@ -171,20 +154,7 @@ export function SignUp() {
                 confirmPassword: "",
               },
             });
-            Notifier.showNotification({
-              containerStyle: {
-                paddingTop: StatusBar.currentHeight,
-              },
-              title: "Error Message",
-              description: "Passwords Mismatch",
-              duration: 3000,
-              showAnimationDuration: 800,
-              showEasing: Easing.ease,
-              Component: NotifierComponents.Alert,
-              componentProps: {
-                alertType: "error",
-              },
-            });
+            NotificationError("Passwords Mismatch");
           } else if (values.confirmPassword.length <= 5) {
             actions.resetForm({
               values: {
@@ -193,20 +163,7 @@ export function SignUp() {
                 confirmPassword: "",
               },
             });
-            Notifier.showNotification({
-              containerStyle: {
-                paddingTop: StatusBar.currentHeight,
-              },
-              title: "Error Message",
-              description: "Passwords shoule be more than 6 characters",
-              duration: 3000,
-              showAnimationDuration: 800,
-              showEasing: Easing.ease,
-              Component: NotifierComponents.Alert,
-              componentProps: {
-                alertType: "error",
-              },
-            });
+            NotificationError("Passwords shoule be more than 6 characters");
           } else {
             signup(values.email, values.confirmPassword)
               .then((res) => {
@@ -221,20 +178,7 @@ export function SignUp() {
                     confirmPassword: "",
                   },
                 });
-                Notifier.showNotification({
-                  containerStyle: {
-                    paddingTop: StatusBar.currentHeight,
-                  },
-                  title: "Firebase Message",
-                  description: JSON.stringify(err),
-                  duration: 3000,
-                  showAnimationDuration: 800,
-                  showEasing: Easing.ease,
-                  Component: NotifierComponents.Alert,
-                  componentProps: {
-                    alertType: "error",
-                  },
-                });
+                NotificationError(JSON.stringify(err));
               });
           }
         }}

@@ -1,0 +1,136 @@
+import { StyleSheet } from "react-native";
+import { colors, fontSize, fullHeigh } from "../../styles/global.styles";
+
+const styles = StyleSheet.create({
+  form: {
+    marginHorizontal: 12,
+    marginVertical: 10,
+  },
+  textForm: {
+    fontSize: fontSize.normal,
+    fontWeight: "bold",
+    color: colors.secondary,
+  },
+  textBoxes: {
+    paddingHorizontal: 5,
+    color: colors.secondary,
+    fontSize: fontSize.normal,
+    fontWeight: "300",
+    backgroundColor: colors.other,
+    height: 50,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  textFormOption: {
+    paddingHorizontal: 5,
+    color: colors.secondary,
+    fontSize: fontSize.normal,
+    fontWeight: "300",
+    backgroundColor: colors.other,
+    height: 50,
+    marginVertical: 10,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+  textFormName: {
+    color: colors.secondary,
+    fontSize: fontSize.normal,
+    fontWeight: "300",
+  },
+  save: {
+    backgroundColor: colors.tertiary,
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 18,
+    borderRadius: 10,
+  },
+  refreshBtn: {
+    backgroundColor: colors.tertiary,
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  verificationButtonText: {
+    fontSize: fontSize.normal,
+    color: colors.primary,
+    fontWeight: "500",
+  },
+  sheetContainer: {
+    height: 240,
+    backgroundColor: colors.primary,
+  },
+  sheetTitle: {
+    fontSize: fontSize.medium,
+    color: colors.secondary,
+    textAlign: "center",
+    marginVertical: 20,
+    fontWeight: "bold",
+  },
+  optionContainer: {
+    marginVertical: 20,
+    marginHorizontal: 20,
+    height: 120,
+    width: 100,
+    borderWidth: 2,
+    borderRadius: 20,
+    borderColor: colors.tertiary,
+  },
+  genderImage: {
+    height: "68%",
+    width: "100%",
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+  },
+  textGenderName: {
+    textAlign: "center",
+    fontSize: fontSize.small,
+    color: colors.secondary,
+  },
+  availableContainer: {
+    justifyContent: "center",
+    alignSelf: "center",
+    flexDirection: "row",
+  },
+  availableOptionContainer: {
+    borderWidth: 2,
+    borderColor: colors.tertiary,
+    borderRadius: 20,
+    marginHorizontal: 10,
+    height: 150,
+    width: 150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  availableIcon1: {
+    backgroundColor: colors.success,
+    padding: 20,
+    borderRadius: 50,
+    marginBottom: 10,
+  },
+  availableIcon2: {
+    backgroundColor: colors.alert,
+    padding: 20,
+    borderRadius: 50,
+    marginBottom: 10,
+  },
+  countriesContainer: {
+    height: fullHeigh,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 10,
+  },
+  myCountries: {
+    borderWidth: 2,
+    borderColor: colors.tertiary,
+    width: "100%",
+    paddingVertical: 20,
+    paddingLeft: 10,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+});
+
+export default styles;

@@ -1,29 +1,12 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  Button,
-  TextInput,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ScrollView,
-} from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 
-import WelcomeScreen from "../welcomeScreen/WelcomeScreen";
+import { storeData, getData } from "../../functions/asyncStorage";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StatusBar } from "expo-status-bar";
-import { useNavigation } from "@react-navigation/native";
-import {
-  AuthStackNavigationRoutesProps,
-  AuthStackParamList,
-  AuthStackParamListProps,
-} from "../../../global";
 import styles from "./loginScreen.styles";
-import Banner from "../../components/banner/Banner";
 
+import WelcomeScreen from "../welcomeScreen/WelcomeScreen";
+import Banner from "../../components/banner/Banner";
 import { Login } from "../../components/authForm/AuthForm";
 
 export default function LoginScreen() {
@@ -31,48 +14,22 @@ export default function LoginScreen() {
     boolean | undefined
   >();
 
-  const storeData = async (value: string) => {
-    try {
-      const data = await AsyncStorage.setItem("isRead", value);
-      return data;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem("isRead");
-      return value;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
-    const read = () => {
-      getData()
-        .then((res) => {
-          if (res === null) {
-            storeData(JSON.stringify(false));
-            setWelcomeScreenState(false);
-          }
-          if (res !== null) {
-            const lala = res !== undefined ? res : "false";
-            setWelcomeScreenState(JSON.parse(lala));
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-
-    read();
-
-    return () => {
-      read();
-    };
-  }, [welcomeSreenState]);
+    getData()
+      .then((res) => {
+        if (res === null) {
+          storeData(JSON.stringify(false));
+          setWelcomeScreenState(false);
+        }
+        if (res !== null) {
+          const lala = res !== undefined ? res : "false";
+          setWelcomeScreenState(JSON.parse(lala));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   if (welcomeSreenState === undefined) {
     return (

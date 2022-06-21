@@ -1,10 +1,12 @@
 import React from "react";
 
-import { createStackNavigator } from "@react-navigation/stack";
-import SignupScreen from "../screens/signupScreen/SignupScreen";
 import { AuthStackParamList } from "../../global";
-import LoginScreen from "../screens/loginScreen/LoginScreen";
+
+import { createStackNavigator } from "@react-navigation/stack";
 import { CardStyleInterpolators } from "@react-navigation/stack";
+
+import SignupScreen from "../screens/signupScreen/SignupScreen";
+import LoginScreen from "../screens/loginScreen/LoginScreen";
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
 
