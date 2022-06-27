@@ -30,6 +30,7 @@ export default function ProfileHeader() {
   const myContext = useContext(context);
 
   const [usersInfo, setUsersInfo] = useState("");
+
   async function kulira() {
     let yawa;
     if (auth.currentUser?.uid === undefined) {
@@ -57,8 +58,13 @@ export default function ProfileHeader() {
         rounded="full"
         borderWidth={2}
         borderColor={colors.tertiary}
-        alt="profile_image"
-        source={require("../../../assets/images/welcomeImages/image3.jpg")}
+        alt="profile_diplay"
+        source={{
+          uri:
+            usersInfo === ""
+              ? "https://firebasestorage.googleapis.com/v0/b/express-app-b8221.appspot.com/o/default%2Ficon.png?alt=media&token=7e429259-6262-4012-ac5b-49a82180e81c"
+              : `${JSON.parse(usersInfo).photoUri}`,
+        }}
       />
       <Text
         style={{

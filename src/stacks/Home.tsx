@@ -16,6 +16,10 @@ import LovedScreen from "../screens/loved/LovedScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 
+import * as Navigationbar from "expo-navigation-bar";
+import { Platform } from "react-native";
+import HomeTab from "./HomeTab";
+
 const TabNavigator = createBottomTabNavigator();
 
 export default function Home() {
@@ -52,6 +56,20 @@ export default function Home() {
       .catch((err) => console.log(err));
   }, []);
 
+  React.useEffect(() => {
+    if (isDarkMode) {
+      if (Platform.OS === "android") {
+        Navigationbar.setBackgroundColorAsync(colors.darkMode);
+        Navigationbar.setButtonStyleAsync("light");
+      }
+    } else {
+      if (Platform.OS === "android") {
+        Navigationbar.setBackgroundColorAsync(colors.primary);
+        Navigationbar.setButtonStyleAsync("dark");
+      }
+    }
+  }, [isDarkMode]);
+
   return (
     <context.Provider value={{ isDarkMode, setIsDarkMode, setDarkModeData }}>
       <StatusBar style={!isDarkMode ? "dark" : "light"} />
@@ -69,7 +87,7 @@ export default function Home() {
       >
         <TabNavigator.Screen
           name="Home"
-          component={HomeScreen}
+          component={HomeTab}
           options={{
             tabBarIcon: ({ focused, color }) => {
               return (

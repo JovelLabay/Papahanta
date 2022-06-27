@@ -1,4 +1,9 @@
-import { auth, storage } from "../../firebase/firebase.config";
+import {
+  auth,
+  photoStorage,
+  realtimeDatabase,
+  storage,
+} from "../../firebase/firebase.config";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -12,6 +17,8 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
+import * as ImagePicker from "expo-image-picker";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 async function signin(email: string, password: string) {
   return await signInWithEmailAndPassword(auth, email, password);
@@ -54,14 +61,17 @@ async function createFirestoreStorage(
   phone: string,
   availability: string,
   country: string,
-  municipality_city: string
+  municipality_city: string,
+  photoUri: string,
+  about: string,
+  theImages: string[]
 ) {
-  const usersLists = new Promise((resolve, reject) => {
-    const fName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
-    const lName = lastName.charAt(0).toUpperCase() + lastName.slice(1);
-    const m_c =
-      municipality_city.charAt(0).toUpperCase() + municipality_city.slice(1);
+  const fName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+  const lName = lastName.charAt(0).toUpperCase() + lastName.slice(1);
+  const m_c =
+    municipality_city.charAt(0).toUpperCase() + municipality_city.slice(1);
 
+  const usersLists = new Promise((resolve, reject) => {
     setDoc(doc(storage, "users", uid), {
       userId: uid,
       firstName: fName,
@@ -71,6 +81,8 @@ async function createFirestoreStorage(
       availability: availability,
       country: country,
       municipality_city: m_c,
+      photoUri: photoUri,
+      about: about,
     })
       .then((response) => {
         resolve(response);
@@ -79,17 +91,37 @@ async function createFirestoreStorage(
         reject(error);
       });
   });
-  const usersDatabase = new Promise((resolve, reject) => {
-    addDoc(collection(storage, uid), {})
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
+
+  // const usersDatabase = new Promise((resolve, reject) => {
+  //   setDoc(doc(storage, uid, `profile_${uid}`), {
+  //     userId: uid,
+  //     firstName: fName,
+  //     lastName: lName,
+  //     gender: gender,
+  //     phone: phone,
+  //     availability: availability,
+  //     country: country,
+  //     municipality_city: m_c,
+  //     photoUri: photoUri,
+  //     about: about,
+  //   })
+  //     .then((response) => {
+  //       resolve(response);
+  //     })
+  //     .catch((error) => {
+  //       reject(error);
+  //     });
+  // });
+
+  const displayImages = new Promise((resolve, reject) => {
+    setDoc(doc(storage, `displayImages`, uid), {
+      theImages: theImages,
+    })
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
   });
 
-  Promise.all([usersLists, usersDatabase])
+  Promise.all([usersLists, displayImages])
     .then((res) => res)
     .catch((err) => err);
 }

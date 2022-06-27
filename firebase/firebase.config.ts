@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getDatabase } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,6 +17,7 @@ const firebaseConfig = {
   messagingSenderId: "392601484936",
   appId: "1:392601484936:web:2502b3482fc89c2d59a93d",
   measurementId: "G-XPEJTRF6VD",
+  databaseURL: "https://express-app-b8221-default-rtdb.firebaseio.com",
 };
 
 // Initialize Firebase
@@ -24,5 +26,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const storage = getFirestore(app);
 const photoStorage = getStorage(app);
+const realtimeDatabase = getDatabase(app);
 
-export { auth, app, storage, photoStorage };
+export { auth, app, storage, photoStorage, realtimeDatabase };

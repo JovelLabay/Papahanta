@@ -1,6 +1,8 @@
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { DocumentData } from "firebase/firestore";
+import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
 
 // AUTH STACK
 type AuthStackParamList = {
@@ -18,6 +20,30 @@ type HomeStackParamList = {
   Profile: undefined;
 };
 type HomeStackparamListProps = NativeStackScreenProps<HomeStackParamList>;
+
+// HOME SCREEN TABS
+type HomeStackParamList = {
+  PostScreenHome: undefined;
+  HomeScreenHome: undefined;
+  MessageScreenHome: undefined;
+};
+type HomeTabParamListprops = MaterialTopTabBarProps<HomeStackParamList>;
+
+// MESSAGE SCREEN
+interface MessageInterface {
+  email: string;
+  profile_picture: string;
+  username: string;
+}
+
+type MessageStackParamList = {
+  MessageList: undefined;
+  MessageContainer: {
+    index: MessageInterface;
+  };
+};
+type MessageStackParamListProps = NativeStackScreenProps<MessageStackParamList>;
+type MessageStackParamListRouteProps = RouteProp<MessageStackParamList>;
 
 // WELCOME SCREEN TYPES
 interface WelcomeScreenProps {
@@ -44,6 +70,9 @@ interface SetUpFormAnnotationProps {
     phone: string;
     country: string;
     municipality_city: string;
+    photoUri: string;
+    about: string;
+    theImages: string[];
   };
   handleSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
   handleChange: {
@@ -96,4 +125,34 @@ interface UsersInfo {
   municipality_city: string;
   phone: string;
   userId: string;
+  photoUri: string;
+}
+
+interface UsersInfoList {
+  item: DocumentData;
+  myContext: DarkMode | null;
+  viewPeople: boolean;
+  setViewPeople: React.Dispatch<React.SetStateAction<boolean>>;
+  information: {
+    firstName: string;
+    lastName: string;
+    gender: string;
+    phone: string;
+    municipality_city: string;
+    country: string;
+    about: string;
+    uuid: string;
+  };
+  setInformation: React.Dispatch<
+    React.SetStateAction<{
+      firstName: string;
+      lastName: string;
+      gender: string;
+      phone: string;
+      municipality_city: string;
+      country: string;
+      about: string;
+      uuid: string;
+    }>
+  >;
 }

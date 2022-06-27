@@ -74,9 +74,7 @@ export default function EmailVerification({
         keyboardVerticalOffset={30}
       >
         <View style={styles.header}>
-          <Text style={styles.headerVerficationTitle}>
-            Email Setup & Verfication
-          </Text>
+          <Text style={styles.headerVerficationTitle}>Verfication</Text>
           {!auth.currentUser?.emailVerified && (
             <TouchableOpacity
               style={styles.verificationButton}
@@ -101,8 +99,13 @@ export default function EmailVerification({
               phone: "",
               country: "",
               municipality_city: "",
+              photoUri:
+                "https://firebasestorage.googleapis.com/v0/b/express-app-b8221.appspot.com/o/default%2Ficon.png?alt=media&token=7e429259-6262-4012-ac5b-49a82180e81c",
+              about: "",
+              theImages: [],
             }}
             onSubmit={(values, actions) => {
+              // UPDATE THE DISPLAY NAME
               updateProfile(UserProfile, {
                 displayName: `${values.firstName} ${values.lastName}`,
               })
@@ -111,6 +114,7 @@ export default function EmailVerification({
                     auth.currentUser?.uid !== undefined
                       ? auth.currentUser?.uid
                       : JSON.stringify(Math.random());
+                  // CREATE FIRESTORE RECORD
                   createFirestoreStorage(
                     myUniqueId,
                     values.firstName,
@@ -119,11 +123,21 @@ export default function EmailVerification({
                     values.phone,
                     values.availability,
                     values.country,
-                    values.municipality_city
+                    values.municipality_city,
+                    values.photoUri,
+                    values.about,
+                    values.theImages
                   )
                     .then(() => {
-                      setIsSuccess(false);
-                      setIsVerfiedAccunt(true);
+                      // LASTLY, UPDATE PHOT URL
+                      updateProfile(UserProfile, {
+                        photoURL: values.photoUri,
+                      })
+                        .then(() => {
+                          setIsSuccess(false);
+                          setIsVerfiedAccunt(true);
+                        })
+                        .catch((err) => console.log(err));
                     })
                     .catch((err) => console.log(err));
                 })

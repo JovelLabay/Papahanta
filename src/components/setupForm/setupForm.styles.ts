@@ -1,15 +1,41 @@
 import { StyleSheet } from "react-native";
-import { colors, fontSize, fullHeigh } from "../../styles/global.styles";
+import { colors, fontSize, fullHeight } from "../../styles/global.styles";
 
 const styles = StyleSheet.create({
   form: {
     marginHorizontal: 12,
     marginVertical: 10,
   },
+  uploadPhoto: {
+    borderStyle: "dashed",
+    borderWidth: 2,
+    height: 180,
+    width: "49%",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  uploadPhotoText: {
+    fontWeight: "bold",
+    fontSize: fontSize.medium,
+    color: colors.tertiary,
+    paddingHorizontal: 10,
+    textAlign: "center",
+  },
   textForm: {
     fontSize: fontSize.normal,
     fontWeight: "bold",
     color: colors.secondary,
+  },
+  textBoxesAbout: {
+    paddingHorizontal: 5,
+    color: colors.secondary,
+    fontSize: fontSize.normal,
+    fontWeight: "300",
+    backgroundColor: colors.other,
+    height: 100,
+    marginVertical: 10,
+    borderRadius: 10,
   },
   textBoxes: {
     paddingHorizontal: 5,
@@ -118,7 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   countriesContainer: {
-    height: fullHeigh,
+    height: fullHeight,
     backgroundColor: colors.primary,
     paddingHorizontal: 10,
   },

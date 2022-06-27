@@ -1,5 +1,5 @@
 import { StatusBar, StyleSheet } from "react-native";
-import { colors, fontSize } from "../../styles/global.styles";
+import { colors, fontSize, fullWidth } from "../../styles/global.styles";
 
 const styles = StyleSheet.create({
   header: {
@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
   },
   list: {
     flexGrow: 1,
+  },
+  mainContainer: {
+    marginTop: 10,
+    flex: 1,
+    width: fullWidth,
   },
   viewerContainer: {
     flex: 1,
@@ -28,7 +33,10 @@ const styles = StyleSheet.create({
   actualContainer1: {
     flex: 1,
     margin: 10,
+    justifyContent: "flex-end",
     alignItems: "flex-start",
+    borderBottomWidth: 2,
+    borderColor: colors.other,
   },
   actualContainer2: {
     flex: 0.2,

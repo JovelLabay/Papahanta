@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   ImageBackground,
   RefreshControl,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -25,56 +27,49 @@ import {
 import EmailVerification from "../../components/emailVerification/EmailVerification";
 import { auth, storage } from "../../../firebase/firebase.config";
 import { Badge, Box, HStack, Image, VStack } from "native-base";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import { DarkMode, UsersInfo } from "../../../global";
-import { collection, doc, onSnapshot } from "firebase/firestore";
-
-interface Nau {
-  id: number;
-  name: string;
-  imageSource: string;
-}
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  Ionicons,
+  FontAwesome,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import { DarkMode, UsersInfo, UsersInfoList } from "../../../global";
+import { collection, doc, DocumentData, onSnapshot } from "firebase/firestore";
+import ViewProfile from "../../components/viewProfile/ViewProfile";
+import HomeScreenLoading from "../../components/loading/homeScreenLoading/HomeScreenLoading";
+import Message from "../../components/message/Message";
 
 export default function HomeScreen() {
+  const myContext = useContext(context);
+
   const myName = auth.currentUser?.displayName === null ? false : true;
   const [isVerifiedAccount, setIsVerfiedAccunt] = useState(myName);
 
-  const myContext = useContext(context);
-
-  const [lista, setLista] = useState([
-    {
-      id: 0,
-      name: "Straigt",
-      imageSource:
-        "https://images.pexels.com/photos/4775198/pexels-photo-4775198.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-    {
-      id: 1,
-      name: "Rebooted",
-      imageSource:
-        "https://images.pexels.com/photos/4167729/pexels-photo-4167729.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 2,
-      name: "Trans",
-      imageSource:
-        "https://images.pexels.com/photos/4992382/pexels-photo-4992382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-  ]);
-
-  const [people, setPeople] = useState([]);
+  const [people, setPeople] = useState<DocumentData[]>([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [viewPeople, setViewPeople] = useState(false);
+  const [information, setInformation] = useState({
+    firstName: "",
+    lastName: "",
+    gender: "",
+    phone: "",
+    municipality_city: "",
+    country: "",
+    about: "",
+    uuid: "",
+  });
 
   useEffect(() => {
     onSnapshot(collection(storage, "users"), (thePeople) => {
-      const PEOPLE: any = [];
+      const PEOPLE: DocumentData[] = [];
       thePeople.forEach((doc) => {
-        PEOPLE.unshift({ ...doc.data() });
+        PEOPLE.push({ ...doc.data() });
       });
       setPeople(PEOPLE);
     });
   }, []);
 
-  const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
@@ -89,72 +84,67 @@ export default function HomeScreen() {
         backgroundColor: myContext?.isDarkMode
           ? colors.darkMode
           : colors.primary,
-        paddingTop: StatusBar.currentHeight,
       }}
     >
-      {/* HEADER */}
-      <HStack
-        alignItems="center"
-        justifyContent="space-between"
-        backgroundColor={colors.tertiary}
-        borderRadius={10}
-        marginX={2}
-        marginY={2}
-      >
-        <Image
-          source={require("../../../assets/icon.png")}
-          alt="Alternate Text"
-          size="sm"
-          borderRadius={100}
-        />
-        <Text style={styles.header}>Papahanta</Text>
-      </HStack>
-      {/* BODY */}
-      <View style={styles.body}>
-        <FlatList
-          style={styles.list}
-          data={people}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => (
-            <TheLista item={item} myContext={myContext} />
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* BODY */}
+        <View style={styles.body}>
+          {people.length <= 0 ? (
+            <HomeScreenLoading />
+          ) : (
+            <FlatList
+              bounces={false}
+              style={styles.list}
+              data={people}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item }) => {
+                const props = {
+                  item,
+                  myContext,
+                  viewPeople,
+                  setViewPeople,
+                  information,
+                  setInformation,
+                };
+                return <TheLista {...props} />;
+              }}
+              horizontal
+              snapToInterval={fullWidth}
+              decelerationRate="fast"
+              showsHorizontalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            />
           )}
-          horizontal
-          snapToInterval={fullWidth}
-          decelerationRate="fast"
-          showsHorizontalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
-      </View>
-      {/* MODAL TO VERFIY YOUR ACCOUNT */}
-      <Modal
-        visible={!isVerifiedAccount}
-        animationType="none"
-        statusBarTranslucent={true}
-      >
-        <EmailVerification setIsVerfiedAccunt={setIsVerfiedAccunt} />
-      </Modal>
+        </View>
+        {/* MODAL TO VERFIY YOUR ACCOUNT */}
+        <Modal
+          visible={!isVerifiedAccount}
+          animationType="none"
+          statusBarTranslucent={true}
+        >
+          <EmailVerification setIsVerfiedAccunt={setIsVerfiedAccunt} />
+        </Modal>
+      </SafeAreaView>
     </View>
   );
 }
-interface Yawa {
-  item: UsersInfo;
-  myContext: DarkMode | null;
-}
 
-function TheLista({ item, myContext }: Yawa) {
+function TheLista({
+  item,
+  myContext,
+  viewPeople,
+  setViewPeople,
+  information,
+  setInformation,
+}: UsersInfoList) {
   return (
-    <View
-      style={{
-        flex: 1,
-        width: fullWidth,
-      }}
-    >
+    <View style={styles.mainContainer}>
       <View style={styles.viewerContainer}>
         <Image
           source={{
-            uri: "https://images.pexels.com/photos/4167729/pexels-photo-4167729.jpeg?auto=compress&cs=tinysrgb&w=1600",
+            uri: item.photoUri,
           }}
           alt="Alternate Text"
           size="sm"
@@ -165,16 +155,55 @@ function TheLista({ item, myContext }: Yawa) {
         <View style={styles.choseContainer}>
           {/* NAMES */}
           <View style={styles.actualContainer1}>
+            <Box flexDirection="row">
+              {/* LOCATION */}
+              <Box flexDirection="row" alignItems="center">
+                <MaterialCommunityIcons
+                  name="city-variant-outline"
+                  size={22}
+                  color="dodgerblue"
+                />
+                <Badge colorScheme="blue" borderRadius="full">
+                  {item.municipality_city}
+                </Badge>
+              </Box>
+              {/* GENDER */}
+              <Box marginLeft={2} flexDirection="row" alignItems="center">
+                <FontAwesome name="intersex" size={20} color="orange" />
+                <Badge colorScheme="orange" borderRadius="full">
+                  {item.gender}
+                </Badge>
+              </Box>
+              {/* AVAILABILITY */}
+              <Box marginLeft={2} flexDirection="row" alignItems="center">
+                <MaterialIcons name="event-available" size={20} color="green" />
+                <Badge colorScheme="green" borderRadius="full">
+                  {item.availability}
+                </Badge>
+              </Box>
+            </Box>
             <Box
               backgroundColor={
                 myContext?.isDarkMode ? colors.lightMode : colors.primary
               }
+              marginY="2"
               paddingY="2"
-              paddingX="3"
-              borderRadius="lg"
+              paddingX="2"
+              borderRadius="full"
+              flexDirection="row"
+              justifyContent="center"
+              alignItems="center"
             >
+              <Image
+                source={require("../../../assets/icon.png")}
+                alt="Alternate Text"
+                h={8}
+                w={8}
+                borderRadius={100}
+              />
               <Text
                 style={{
+                  marginHorizontal: 5,
                   fontSize: fontSize.medium,
                   fontWeight: "bold",
                   color: !myContext?.isDarkMode
@@ -182,7 +211,10 @@ function TheLista({ item, myContext }: Yawa) {
                     : colors.primary,
                 }}
               >
-                {item.firstName}
+                {`${item.firstName} ${item.lastName}`}
+                {item.userId === auth.currentUser?.uid ? (
+                  <Text>{" | "}You</Text>
+                ) : null}
               </Text>
             </Box>
           </View>
@@ -229,6 +261,23 @@ function TheLista({ item, myContext }: Yawa) {
               />
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => {
+                setViewPeople(true);
+                setInformation((prev) => {
+                  return {
+                    ...information,
+                    firstName: (prev.firstName = item.firstName),
+                    lastName: (prev.lastName = item.lastName),
+                    gender: (prev.gender = item.gender),
+                    phone: (prev.phone = item.phone),
+                    municipality_city: (prev.municipality_city =
+                      item.municipality_city),
+                    country: (prev.country = item.country),
+                    about: (prev.about = item.about),
+                    uuid: (prev.uuid = item.userId),
+                  };
+                });
+              }}
               style={{
                 backgroundColor: myContext?.isDarkMode
                   ? colors.lightMode
@@ -253,10 +302,28 @@ function TheLista({ item, myContext }: Yawa) {
       </View>
 
       {/* MODAL VIEW FOR THE USERS */}
-      <Modal visible={false} animationType="slide"></Modal>
+      <Modal
+        visible={viewPeople}
+        animationType="slide"
+        statusBarTranslucent={true}
+      >
+        <View
+          style={{
+            backgroundColor: myContext?.isDarkMode
+              ? colors.darkMode
+              : colors.primary,
+            flex: 1,
+          }}
+        >
+          <ScrollView>
+            <ViewProfile
+              setViewPeople={setViewPeople}
+              information={information}
+              myContext={myContext}
+            />
+          </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
-}
-function wait(arg0: number) {
-  throw new Error("Function not implemented.");
 }
