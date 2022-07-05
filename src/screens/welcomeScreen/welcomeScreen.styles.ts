@@ -8,9 +8,9 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
   },
   indicators: {
+    marginVertical: 10,
     justifyContent: "space-evenly",
     flexDirection: "row",
-    marginTop: 10,
   },
   mainContainer: {
     flex: 1,
@@ -21,12 +21,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: 300,
-    height: 300,
-    borderRadius: 200,
-    borderWidth: 5,
-    borderColor: colors.tertiary,
-    marginBottom: 20,
+    flex: 1,
   },
   description: {
     fontSize: fontSize.big,
@@ -38,12 +33,13 @@ const styles = StyleSheet.create({
   },
   //   NEXT
   nextContainer: {
-    flex: 0.1,
-    justifyContent: "center",
+    flex: 0.2,
+    justifyContent: "space-evenly",
     alignItems: "center",
+    flexDirection: "row",
   },
   skipTouchable2: {
-    width: "90%",
+    width: "45%",
     paddingVertical: 15,
     borderRadius: 10,
     backgroundColor: colors.tertiary,
@@ -62,6 +58,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   skipTouchable: {
+    width: "45%",
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.tertiary,
+  },
+  skipTouchable3: {
     width: "90%",
     paddingVertical: 15,
     borderRadius: 10,

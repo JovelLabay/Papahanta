@@ -17,8 +17,7 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
-import * as ImagePicker from "expo-image-picker";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { set, ref } from "firebase/database";
 
 async function signin(email: string, password: string) {
   return await signInWithEmailAndPassword(auth, email, password);
@@ -71,8 +70,8 @@ async function createFirestoreStorage(
   const m_c =
     municipality_city.charAt(0).toUpperCase() + municipality_city.slice(1);
 
-  const usersLists = new Promise((resolve, reject) => {
-    setDoc(doc(storage, "users", uid), {
+  const usersList = new Promise((resolve, reject) => {
+    set(ref(realtimeDatabase, "users/" + uid), {
       userId: uid,
       firstName: fName,
       lastName: lName,
@@ -92,36 +91,19 @@ async function createFirestoreStorage(
       });
   });
 
-  // const usersDatabase = new Promise((resolve, reject) => {
-  //   setDoc(doc(storage, uid, `profile_${uid}`), {
-  //     userId: uid,
-  //     firstName: fName,
-  //     lastName: lName,
-  //     gender: gender,
-  //     phone: phone,
-  //     availability: availability,
-  //     country: country,
-  //     municipality_city: m_c,
-  //     photoUri: photoUri,
-  //     about: about,
-  //   })
-  //     .then((response) => {
-  //       resolve(response);
-  //     })
-  //     .catch((error) => {
-  //       reject(error);
-  //     });
-  // });
-
   const displayImages = new Promise((resolve, reject) => {
-    setDoc(doc(storage, `displayImages`, uid), {
+    set(ref(realtimeDatabase, "displayImages/" + uid), {
       theImages: theImages,
     })
-      .then((res) => resolve(res))
-      .catch((err) => reject(err));
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
 
-  Promise.all([usersLists, displayImages])
+  Promise.all([usersList, displayImages])
     .then((res) => res)
     .catch((err) => err);
 }

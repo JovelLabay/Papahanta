@@ -1,4 +1,4 @@
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Modal } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 
 import { signOut } from "firebase/auth";
@@ -19,11 +19,18 @@ import { StatusBar } from "expo-status-bar";
 import * as Navigationbar from "expo-navigation-bar";
 import { Platform } from "react-native";
 import HomeTab from "./HomeTab";
+import MessageNew from "../components/message/MessageNew";
 
 const TabNavigator = createBottomTabNavigator();
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isOpenMessage, setIsOpenMessage] = useState(false);
+  const [nameOfRecipient, setNameOfRecipient] = useState({
+    fName: "",
+    lName: "",
+    recipientUid: "",
+  });
 
   const getDarkModedata = async () => {
     try {
@@ -71,7 +78,17 @@ export default function Home() {
   }, [isDarkMode]);
 
   return (
-    <context.Provider value={{ isDarkMode, setIsDarkMode, setDarkModeData }}>
+    <context.Provider
+      value={{
+        isDarkMode,
+        setIsDarkMode,
+        setDarkModeData,
+        isOpenMessage,
+        setIsOpenMessage,
+        nameOfRecipient,
+        setNameOfRecipient,
+      }}
+    >
       <StatusBar style={!isDarkMode ? "dark" : "light"} />
       <TabNavigator.Navigator
         screenOptions={{
@@ -210,6 +227,15 @@ export default function Home() {
           }}
         />
       </TabNavigator.Navigator>
+
+      {/* MODAL FOR NEW MESSAGE */}
+      <Modal
+        visible={isOpenMessage}
+        statusBarTranslucent={false}
+        animationType="slide"
+      >
+        <MessageNew />
+      </Modal>
     </context.Provider>
   );
 }

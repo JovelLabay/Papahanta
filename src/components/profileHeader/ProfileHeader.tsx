@@ -14,7 +14,11 @@ import {
 } from "@expo/vector-icons";
 import styles from "./profilerHeader.styles";
 import { context } from "../../context/context";
-import { auth, storage } from "../../../firebase/firebase.config";
+import {
+  auth,
+  realtimeDatabase,
+  storage,
+} from "../../../firebase/firebase.config";
 import { color } from "native-base/lib/typescript/theme/styled-system";
 import {
   onSnapshot,
@@ -25,6 +29,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { UsersInfo } from "../../../global";
+import { onValue, ref } from "firebase/database";
 
 export default function ProfileHeader() {
   const myContext = useContext(context);
@@ -38,10 +43,18 @@ export default function ProfileHeader() {
     } else {
       yawa = auth.currentUser?.uid;
     }
-    await onSnapshot(doc(storage, "users", yawa), (doc) => {
-      setUsersInfo(JSON.stringify(doc.data()));
+    // await onSnapshot(doc(storage, "users", yawa), (doc) => {
+    //   setUsersInfo(JSON.stringify(doc.data()));
+
+    // });
+
+    const starCountRef = ref(realtimeDatabase, "users/" + yawa);
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      setUsersInfo(JSON.stringify(data));
     });
   }
+
   useEffect(() => {
     kulira();
   }, []);

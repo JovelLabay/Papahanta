@@ -10,11 +10,14 @@ import * as ImagePicker from "expo-image-picker";
 import {
   getDownloadURL,
   listAll,
-  ref,
   uploadBytes,
   uploadBytesResumable,
 } from "firebase/storage";
-import { auth, photoStorage } from "../../../firebase/firebase.config";
+import {
+  auth,
+  photoStorage,
+  realtimeDatabase,
+} from "../../../firebase/firebase.config";
 import { Badge, Box, Button, HStack, Image, VStack } from "native-base";
 import { AntDesign, FontAwesome, Feather, Ionicons } from "@expo/vector-icons";
 import { colors, fontSize, fullWidth } from "../../styles/global.styles";
@@ -26,6 +29,9 @@ import {
   getDoc,
   doc,
 } from "firebase/firestore";
+
+import { onValue, ref } from "firebase/database";
+
 import { storage } from "../../../firebase/firebase.config";
 import styles from "./viewProfile.styles";
 import { DarkMode, HomeTabParamListprops } from "../../../global";
@@ -51,17 +57,18 @@ export default function ViewProfile({
   myContext: DarkMode | null;
 }) {
   const navigation = useNavigation<HomeTabParamListprops>();
-  const [sample, setSample] = useState<string[]>([]);
+  const [sample, setSample] = useState([]);
 
   async function yawa() {
-    const docRef = doc(storage, "displayImages", information.uuid);
-    const docSnap = await getDoc(docRef);
+    const starCountRef = await ref(
+      realtimeDatabase,
+      "displayImages/" + information.uuid
+    );
+    await onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
 
-    if (docSnap.exists()) {
-      setSample(docSnap.data().theImages);
-    } else {
-      console.log("No such document!");
-    }
+      setSample(data.theImages);
+    });
   }
 
   useEffect(() => {
@@ -121,6 +128,9 @@ export default function ViewProfile({
           <Box>
             <Text style={styles.header}>
               {`${information.firstName} ${information.lastName}`}
+              {information.uuid === auth.currentUser?.uid ? (
+                <Text>{" | "}You</Text>
+              ) : null}
             </Text>
             <HStack space={5} width={fullWidth - 100} flexWrap="wrap">
               <Box marginY={2} flexDirection="row" alignItems="center">
@@ -152,6 +162,12 @@ export default function ViewProfile({
               onPress={() => {
                 setViewPeople(false);
                 navigation.navigate("MessageScreenHome");
+                myContext?.setIsOpenMessage(true);
+                myContext?.setNameOfRecipient({
+                  fName: information.firstName,
+                  lName: information.lastName,
+                  recipientUid: information.uuid,
+                });
               }}
             >
               <AntDesign name="message1" size={30} color={colors.primary} />

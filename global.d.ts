@@ -31,15 +31,17 @@ type HomeTabParamListprops = MaterialTopTabBarProps<HomeStackParamList>;
 
 // MESSAGE SCREEN
 interface MessageInterface {
-  email: string;
-  profile_picture: string;
-  username: string;
+  fullName: string;
+  message: string;
+  position: string;
 }
 
 type MessageStackParamList = {
   MessageList: undefined;
   MessageContainer: {
-    index: MessageInterface;
+    item: MessageInterface[] | undefined;
+    recepientUniqueId: string;
+    myFullName: string;
   };
 };
 type MessageStackParamListProps = NativeStackScreenProps<MessageStackParamList>;
@@ -58,6 +60,20 @@ interface DarkMode {
   isDarkMode: boolean;
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   setDarkModeData: (value: string) => Promise<void>;
+  isOpenMessage: boolean;
+  setIsOpenMessage: React.Dispatch<React.SetStateAction<boolean>>;
+  nameOfRecipient: {
+    fName: string;
+    lName: string;
+    recipientUid: string;
+  };
+  setNameOfRecipient: React.Dispatch<
+    React.SetStateAction<{
+      fName: string;
+      lName: string;
+      recipientUid: string;
+    }>
+  >;
 }
 
 // SETUP FORM INTERFACES

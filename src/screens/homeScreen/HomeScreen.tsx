@@ -25,7 +25,11 @@ import {
 } from "../../styles/global.styles";
 
 import EmailVerification from "../../components/emailVerification/EmailVerification";
-import { auth, storage } from "../../../firebase/firebase.config";
+import {
+  auth,
+  realtimeDatabase,
+  storage,
+} from "../../../firebase/firebase.config";
 import { Badge, Box, HStack, Image, VStack } from "native-base";
 import {
   AntDesign,
@@ -39,6 +43,7 @@ import { collection, doc, DocumentData, onSnapshot } from "firebase/firestore";
 import ViewProfile from "../../components/viewProfile/ViewProfile";
 import HomeScreenLoading from "../../components/loading/homeScreenLoading/HomeScreenLoading";
 import Message from "../../components/message/Message";
+import { onValue, ref } from "firebase/database";
 
 export default function HomeScreen() {
   const myContext = useContext(context);
@@ -61,12 +66,15 @@ export default function HomeScreen() {
   });
 
   useEffect(() => {
-    onSnapshot(collection(storage, "users"), (thePeople) => {
-      const PEOPLE: DocumentData[] = [];
-      thePeople.forEach((doc) => {
-        PEOPLE.push({ ...doc.data() });
-      });
-      setPeople(PEOPLE);
+    const starCountRef = ref(realtimeDatabase, "users/");
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      const ar = [];
+      for (const item in data) {
+        ar.push(data[item]);
+      }
+
+      setPeople(ar);
     });
   }, []);
 

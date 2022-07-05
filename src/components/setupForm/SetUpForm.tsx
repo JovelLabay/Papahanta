@@ -45,7 +45,7 @@ export default function SetUpForm({
   const [photoUriState, setPhotoUriState] = useState(
     "https://firebasestorage.googleapis.com/v0/b/express-app-b8221.appspot.com/o/default%2Ficon.png?alt=media&token=7e429259-6262-4012-ac5b-49a82180e81c"
   );
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(0);
   const [searchValue, setSeachValue] = useState("");
   const [isPhotoDone, setIsPhotoDonw] = useState(false);
   const [image1, setImage1] = useState("");
@@ -123,7 +123,7 @@ export default function SetUpForm({
         "state_changed",
         (snap) => {
           const progress = (snap.bytesTransferred / snap.totalBytes) * 100;
-          setLoading("loading" + progress);
+          setLoading(progress);
           switch (snap.state) {
             case "paused":
               console.log("Upload is paused");
@@ -157,15 +157,23 @@ export default function SetUpForm({
             }
             if (imageNumber === "image1") {
               values.theImages.push(downloadURL);
+              setImage1(downloadURL);
+              setLoading(0);
             }
             if (imageNumber === "image2") {
               values.theImages.push(downloadURL);
+              setImage2(downloadURL);
+              setLoading(0);
             }
             if (imageNumber === "image3") {
               values.theImages.push(downloadURL);
+              setImage3(downloadURL);
+              setLoading(0);
             }
             if (imageNumber === "image4") {
               values.theImages.push(downloadURL);
+              setImage4(downloadURL);
+              setLoading(0);
             }
           });
         }
@@ -178,7 +186,29 @@ export default function SetUpForm({
       {!isPhotoDone ? (
         <>
           <Text style={styles.textForm}>Add the best photo that you have</Text>
-          <Text style={styles.textForm}>{loading}</Text>
+          {/* LOADING */}
+          <View
+            style={{
+              marginVertical: 10,
+              borderRadius: 10,
+              zIndex: 5,
+              width: "100%",
+              height: 10,
+              backgroundColor: "gray",
+              opacity: 0.3,
+            }}
+          >
+            <View
+              style={{
+                position: "absolute",
+                borderRadius: 10,
+                zIndex: 5,
+                width: `${Math.round(loading).toString()}%`,
+                height: 10,
+                backgroundColor: colors.tertiary,
+              }}
+            />
+          </View>
           <View
             style={{
               flex: 1,
@@ -188,148 +218,236 @@ export default function SetUpForm({
               marginTop: 5,
             }}
           >
-            <TouchableOpacity
-              onPress={() =>
-                uploadPhoto("usersPhoto", `${auth.currentUser?.uid}`, "image1")
-              }
-              style={{
-                borderWidth: 2,
-                borderStyle: "dashed",
-                height: 300,
-                width: "45%",
-                backgroundColor: colors.opccityColor,
-                borderRadius: 10,
-                marginHorizontal: 5,
-                marginVertical: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {image1 !== "" ? (
-                <Image
-                  source={{
-                    uri: image1,
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    borderRadius: 10,
-                  }}
-                />
-              ) : (
-                <Feather name="plus-circle" size={40} color={colors.tertiary} />
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                uploadPhoto("usersPhoto", `${auth.currentUser?.uid}`, "image2")
-              }
-              style={{
-                borderWidth: 2,
-                borderStyle: "dashed",
-                height: 300,
-                width: "45%",
-                backgroundColor: colors.opccityColor,
-                borderRadius: 10,
-                marginHorizontal: 5,
-                marginVertical: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {image2 !== "" ? (
-                <Image
-                  source={{
-                    uri: image2,
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    borderRadius: 10,
-                  }}
-                />
-              ) : (
-                <Feather name="plus-circle" size={40} color={colors.tertiary} />
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                uploadPhoto("usersPhoto", `${auth.currentUser?.uid}`, "image3")
-              }
-              style={{
-                borderWidth: 2,
-                borderStyle: "dashed",
-                height: 300,
-                width: "45%",
-                backgroundColor: colors.opccityColor,
-                borderRadius: 10,
-                marginHorizontal: 5,
-                marginVertical: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {image3 !== "" ? (
-                <Image
-                  source={{
-                    uri: image3,
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    borderRadius: 10,
-                  }}
-                />
-              ) : (
-                <Feather name="plus-circle" size={40} color={colors.tertiary} />
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                uploadPhoto("usersPhoto", `${auth.currentUser?.uid}`, "image4")
-              }
-              style={{
-                borderWidth: 2,
-                borderStyle: "dashed",
-                height: 300,
-                width: "45%",
-                backgroundColor: colors.opccityColor,
-                borderRadius: 10,
-                marginHorizontal: 5,
-                marginVertical: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {image4 !== "" ? (
-                <Image
-                  source={{
-                    uri: image4,
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    borderRadius: 10,
-                  }}
-                />
-              ) : (
-                <Feather name="plus-circle" size={40} color={colors.tertiary} />
-              )}
-            </TouchableOpacity>
+            {/* IMAGE 2 */}
+            {values.theImages.length <= 1 || values.theImages.length >= 1 ? (
+              <TouchableOpacity
+                disabled={image1 !== "" ? true : false}
+                onPress={() =>
+                  uploadPhoto(
+                    "usersPhoto",
+                    `${auth.currentUser?.uid}`,
+                    "image1"
+                  )
+                }
+                style={{
+                  borderWidth: 2,
+                  borderStyle: "dashed",
+                  height: 300,
+                  width: "45%",
+                  backgroundColor: colors.opccityColor,
+                  borderRadius: 10,
+                  marginHorizontal: 5,
+                  marginVertical: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {image1 !== "" ? (
+                  <Image
+                    source={{
+                      uri: image1,
+                    }}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      borderRadius: 10,
+                    }}
+                  />
+                ) : (
+                  <Feather
+                    name="plus-circle"
+                    size={40}
+                    color={colors.tertiary}
+                  />
+                )}
+              </TouchableOpacity>
+            ) : null}
+
+            {/* IMAGE 2 */}
+            {values.theImages.length >= 1 ? (
+              <TouchableOpacity
+                disabled={image2 !== "" ? true : false}
+                onPress={() =>
+                  uploadPhoto(
+                    "usersPhoto",
+                    `${auth.currentUser?.uid}`,
+                    "image2"
+                  )
+                }
+                style={{
+                  borderWidth: 2,
+                  borderStyle: "dashed",
+                  height: 300,
+                  width: "45%",
+                  backgroundColor: colors.opccityColor,
+                  borderRadius: 10,
+                  marginHorizontal: 5,
+                  marginVertical: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {image2 !== "" ? (
+                  <Image
+                    source={{
+                      uri: image2,
+                    }}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      borderRadius: 10,
+                    }}
+                  />
+                ) : (
+                  <Feather
+                    name="plus-circle"
+                    size={40}
+                    color={colors.tertiary}
+                  />
+                )}
+              </TouchableOpacity>
+            ) : null}
+
+            {/* IMAGE 3 */}
+            {values.theImages.length >= 2 ? (
+              <TouchableOpacity
+                disabled={image3 !== "" ? true : false}
+                onPress={() =>
+                  uploadPhoto(
+                    "usersPhoto",
+                    `${auth.currentUser?.uid}`,
+                    "image3"
+                  )
+                }
+                style={{
+                  borderWidth: 2,
+                  borderStyle: "dashed",
+                  height: 300,
+                  width: "45%",
+                  backgroundColor: colors.opccityColor,
+                  borderRadius: 10,
+                  marginHorizontal: 5,
+                  marginVertical: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {image3 !== "" ? (
+                  <Image
+                    source={{
+                      uri: image3,
+                    }}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      borderRadius: 10,
+                    }}
+                  />
+                ) : (
+                  <Feather
+                    name="plus-circle"
+                    size={40}
+                    color={colors.tertiary}
+                  />
+                )}
+              </TouchableOpacity>
+            ) : null}
+
+            {/* IMAGE 4 */}
+            {values.theImages.length >= 3 ? (
+              <TouchableOpacity
+                disabled={image4 !== "" ? true : false}
+                onPress={() =>
+                  uploadPhoto(
+                    "usersPhoto",
+                    `${auth.currentUser?.uid}`,
+                    "image4"
+                  )
+                }
+                style={{
+                  borderWidth: 2,
+                  borderStyle: "dashed",
+                  height: 300,
+                  width: "45%",
+                  backgroundColor: colors.opccityColor,
+                  borderRadius: 10,
+                  marginHorizontal: 5,
+                  marginVertical: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {image4 !== "" ? (
+                  <Image
+                    source={{
+                      uri: image4,
+                    }}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      borderRadius: 10,
+                    }}
+                  />
+                ) : (
+                  <Feather
+                    name="plus-circle"
+                    size={40}
+                    color={colors.tertiary}
+                  />
+                )}
+              </TouchableOpacity>
+            ) : null}
           </View>
-          <Button
-            onPress={() => setIsPhotoDonw(true)}
-            marginY="5"
-            colorScheme="green"
-          >
-            Next
-          </Button>
+
+          {/* NEXT */}
+          {values.theImages.length === 4 ? (
+            <Button
+              onPress={() => setIsPhotoDonw(true)}
+              marginY="5"
+              colorScheme="green"
+            >
+              Next
+            </Button>
+          ) : (
+            <Text
+              style={{
+                fontWeight: "400",
+                color: colors.alert,
+                fontSize: fontSize.medium,
+                textAlign: "center",
+              }}
+            >
+              *You must add your best 4 photos here before to proceed.
+            </Text>
+          )}
         </>
       ) : (
         <>
           {/* PHOTO URL */}
           <Text style={styles.textForm}>Profile Image</Text>
-          <Text style={styles.textForm}>{loading}</Text>
+          {/* LOADING */}
+          <View
+            style={{
+              marginVertical: 10,
+              borderRadius: 10,
+              zIndex: 5,
+              width: "100%",
+              height: 10,
+              backgroundColor: "gray",
+              opacity: 0.3,
+            }}
+          >
+            <View
+              style={{
+                position: "absolute",
+                borderRadius: 10,
+                zIndex: 5,
+                width: `${Math.round(loading).toString()}%`,
+                height: 10,
+                backgroundColor: colors.tertiary,
+              }}
+            />
+          </View>
           <Box
             justifyContent="center"
             alignItems="center"
@@ -516,14 +634,6 @@ export default function SetUpForm({
               )}
             </>
           )}
-          {/* BACK */}
-          <Button
-            marginY={3}
-            colorScheme="green"
-            onPress={() => setIsPhotoDonw(false)}
-          >
-            Back
-          </Button>
         </>
       )}
 

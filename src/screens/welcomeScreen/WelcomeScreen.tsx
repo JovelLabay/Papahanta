@@ -7,6 +7,7 @@ import {
   Button,
   Image,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import { WelcomeScreenProps } from "../../../global";
 import { colors } from "../../styles/global.styles";
@@ -18,15 +19,15 @@ export default function WelcomeScreen({
 }: WelcomeScreenProps) {
   const [welcomeImages, setWelcomeImages] = useState({
     firstImage: {
-      description: "Find people who match with you",
+      description: "Find people that you like and adore.",
       state: true,
     },
     secondImage: {
-      description: "Easily sent a message to the people you like",
+      description: "Easily sent a message to the people you like.",
       state: false,
     },
     thirdImage: {
-      description: "Don't wait anymore, find out your soul mate now",
+      description: "Wait no more! Find your soulmate now!",
       state: false,
     },
   });
@@ -83,74 +84,104 @@ export default function WelcomeScreen({
           }}
         />
       </View>
+
+      {/* WELCOME CONTENTS */}
       <View style={styles.mainContainer}>
         {welcomeImages.firstImage.state ? (
-          <>
+          // FIRST IMAGE
+          <ImageBackground
+            fadeDuration={1000}
+            resizeMode="cover"
+            style={styles.image}
+            source={require("../../../assets/images/welcomeImages/image1.jpg")}
+          >
             <View style={styles.imageAndDescriptionContainer}>
-              <Image
-                fadeDuration={1000}
-                resizeMode="cover"
-                style={styles.image}
-                source={require("../../../assets/images/welcomeImages/image1.jpg")}
-              />
               <Text style={styles.description}>
                 {welcomeImages.firstImage.description}
               </Text>
             </View>
             <View style={styles.nextContainer}>
+              <TouchableOpacity
+                style={styles.skipTouchable}
+                onPress={() => {
+                  setWelcomeScreenState(true);
+                  storeData(JSON.stringify(true));
+                }}
+              >
+                <Text style={styles.skipText}>
+                  {!welcomeImages.thirdImage.state
+                    ? "Skip"
+                    : "Create your Account"}
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.skipTouchable2} onPress={next2}>
                 <Text style={styles.skipText2}>Next</Text>
               </TouchableOpacity>
             </View>
-          </>
+          </ImageBackground>
         ) : welcomeImages.secondImage.state ? (
-          <>
+          // SECOND IMAGE
+          <ImageBackground
+            fadeDuration={1000}
+            resizeMode="cover"
+            style={styles.image}
+            source={require("../../../assets/images/welcomeImages/image2.jpg")}
+          >
             <View style={styles.imageAndDescriptionContainer}>
-              <Image
-                fadeDuration={1000}
-                resizeMode="cover"
-                style={styles.image}
-                source={require("../../../assets/images/welcomeImages/image2.jpg")}
-              />
               <Text style={styles.description}>
                 {welcomeImages.secondImage.description}
               </Text>
             </View>
             <View style={styles.nextContainer}>
+              <TouchableOpacity
+                style={styles.skipTouchable}
+                onPress={() => {
+                  setWelcomeScreenState(true);
+                  storeData(JSON.stringify(true));
+                }}
+              >
+                <Text style={styles.skipText}>
+                  {!welcomeImages.thirdImage.state
+                    ? "Skip"
+                    : "Create your Account"}
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.skipTouchable2} onPress={next3}>
                 <Text style={styles.skipText2}>Next</Text>
               </TouchableOpacity>
             </View>
-          </>
+          </ImageBackground>
         ) : (
-          <>
+          // THIRD IMAGE
+          <ImageBackground
+            fadeDuration={1000}
+            resizeMode="cover"
+            style={styles.image}
+            source={require("../../../assets/images/welcomeImages/image3.jpg")}
+          >
             <View style={styles.imageAndDescriptionContainer}>
-              <Image
-                fadeDuration={1000}
-                resizeMode="cover"
-                style={styles.image}
-                source={require("../../../assets/images/welcomeImages/image3.jpg")}
-              />
               <Text style={styles.description}>
                 {welcomeImages.thirdImage.description}
               </Text>
             </View>
-          </>
+            {/* BUTTON TO NEXT TO LOGIN SCREEN */}
+            <View style={styles.bottomContainer}>
+              <TouchableOpacity
+                style={styles.skipTouchable3}
+                onPress={() => {
+                  setWelcomeScreenState(true);
+                  storeData(JSON.stringify(true));
+                }}
+              >
+                <Text style={styles.skipText}>
+                  {!welcomeImages.thirdImage.state
+                    ? "Skip"
+                    : "Create your Account"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
         )}
-      </View>
-      {/* BUTTON TO NEXT TO LOGIN SCREEN */}
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity
-          style={styles.skipTouchable}
-          onPress={() => {
-            setWelcomeScreenState(true);
-            storeData(JSON.stringify(true));
-          }}
-        >
-          <Text style={styles.skipText}>
-            {!welcomeImages.thirdImage.state ? "Skip" : "Create your Account"}
-          </Text>
-        </TouchableOpacity>
       </View>
     </View>
   );

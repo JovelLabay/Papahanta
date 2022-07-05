@@ -4,7 +4,7 @@ import { context } from "../context/context";
 import { colors } from "../styles/global.styles";
 import { createStackNavigator } from "@react-navigation/stack";
 import Message from "../components/message/Message";
-import MessageContainer from "../components/message/messageContainer";
+import MessageContainer from "../components/message/MessageContainer";
 import { CardStyleInterpolators } from "@react-navigation/stack";
 
 import { MessageStackParamListProps } from "../../global";
