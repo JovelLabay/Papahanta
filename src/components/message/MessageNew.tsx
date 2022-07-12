@@ -17,6 +17,7 @@ import {
   DocumentData,
 } from "firebase/firestore";
 import { auth, storage } from "../../../firebase/firebase.config";
+import * as Network from "expo-network";
 
 export default function MessageNew() {
   const myContext = useContext(context);
@@ -71,6 +72,7 @@ export default function MessageNew() {
 
     // CLEAR TEXT INPUT
     setContentMessage("");
+    // CHECK FIRST IF THE MESSAGE IS EMPTY
     try {
       await updateDoc(doc(storage, myUniqueId, myUniqueIdAndMyYourName), {
         index: arrayUnion({
@@ -90,9 +92,11 @@ export default function MessageNew() {
       });
       messageScrollView.current?.scrollToEnd({ animated: true });
     } catch {
+      // AND IF THE MESSAGE IS EMPTY THEN WRITE NEW MESSAGE
       try {
         await setDoc(doc(storage, myUniqueId, myUniqueIdAndMyYourName), {
           myUniqueId: myUniqueIdRecepient,
+          myFullName: `${myContext?.nameOfRecipient.fName} ${myContext?.nameOfRecipient.lName}`,
           index: arrayUnion({
             fullName: `${myContext?.nameOfRecipient.fName} ${myContext?.nameOfRecipient.lName}`,
             hisId: myUniqueIdRecepient,
@@ -102,6 +106,7 @@ export default function MessageNew() {
         });
         await setDoc(doc(storage, myUniqueIdRecepient, myUniqueIdAndMyName), {
           myUniqueId: myUniqueId,
+          myFullName: `${auth.currentUser?.displayName}`,
           index: arrayUnion({
             fullName: `${auth.currentUser?.displayName}`,
             hisId: myUniqueId,
@@ -114,6 +119,17 @@ export default function MessageNew() {
       } catch (error) {
         console.log(error);
       }
+    }
+  };
+
+  const checkConnectionFirst = async () => {
+    const connection = await Network.getNetworkStateAsync();
+    if (connection.isConnected) {
+      sendNewMessage();
+    } else {
+      alert("You are not connected to the internet");
+
+    //  THIS IS FOR CUSTOM ALERT MESSAGE BOX WHEN DEVICE IS OFFLINE
     }
   };
 
@@ -245,7 +261,7 @@ export default function MessageNew() {
           size="lg"
           rounded="lg"
           backgroundColor={colors.tertiary}
-          onPress={sendNewMessage}
+          onPress={checkConnectionFirst}
         >
           <Feather name="send" size={24} color={colors.primary} />
         </Button>

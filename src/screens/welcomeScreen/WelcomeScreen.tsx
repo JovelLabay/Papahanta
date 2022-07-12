@@ -12,6 +12,7 @@ import {
 import { WelcomeScreenProps } from "../../../global";
 import { colors } from "../../styles/global.styles";
 import styles from "./welcomeScreen.styles";
+import {BlurView} from "expo-blur";
 
 export default function WelcomeScreen({
   setWelcomeScreenState,
@@ -95,11 +96,12 @@ export default function WelcomeScreen({
             style={styles.image}
             source={require("../../../assets/images/welcomeImages/image1.jpg")}
           >
+            <BlurView tint="dark" intensity={40} style={{flex: 1}}>
             <View style={styles.imageAndDescriptionContainer}>
-              <Text style={styles.description}>
-                {welcomeImages.firstImage.description}
-              </Text>
-            </View>
+                <Text style={styles.description}>
+                  {welcomeImages.firstImage.description}
+                </Text>
+              </View>
             <View style={styles.nextContainer}>
               <TouchableOpacity
                 style={styles.skipTouchable}
@@ -118,6 +120,8 @@ export default function WelcomeScreen({
                 <Text style={styles.skipText2}>Next</Text>
               </TouchableOpacity>
             </View>
+            </BlurView>
+
           </ImageBackground>
         ) : welcomeImages.secondImage.state ? (
           // SECOND IMAGE
@@ -127,6 +131,7 @@ export default function WelcomeScreen({
             style={styles.image}
             source={require("../../../assets/images/welcomeImages/image2.jpg")}
           >
+            <BlurView tint="dark" intensity={40} style={{flex: 1}}>
             <View style={styles.imageAndDescriptionContainer}>
               <Text style={styles.description}>
                 {welcomeImages.secondImage.description}
@@ -150,6 +155,7 @@ export default function WelcomeScreen({
                 <Text style={styles.skipText2}>Next</Text>
               </TouchableOpacity>
             </View>
+              </BlurView>
           </ImageBackground>
         ) : (
           // THIRD IMAGE
@@ -159,6 +165,7 @@ export default function WelcomeScreen({
             style={styles.image}
             source={require("../../../assets/images/welcomeImages/image3.jpg")}
           >
+            <BlurView tint="dark" intensity={40} style={{flex: 1}}>
             <View style={styles.imageAndDescriptionContainer}>
               <Text style={styles.description}>
                 {welcomeImages.thirdImage.description}
@@ -180,6 +187,7 @@ export default function WelcomeScreen({
                 </Text>
               </TouchableOpacity>
             </View>
+              </BlurView>
           </ImageBackground>
         )}
       </View>

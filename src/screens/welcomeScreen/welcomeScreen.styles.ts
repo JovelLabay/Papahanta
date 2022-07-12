@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     width: "45%",
     paddingVertical: 15,
     borderRadius: 10,
-    borderWidth: 2,
+    borderWidth: 2.5,
     borderColor: colors.tertiary,
   },
   skipTouchable3: {
